@@ -1,0 +1,55 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
+package frc.robot;
+
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.subsystems.Example.Drivetrain;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.limelight.LimelightIO;
+import frc.robot.subsystems.vision.photonvision.PhotonVisionIO;
+
+public class RobotContainer {
+
+  private final Drivetrain drivetrain = new Drivetrain();
+  private Vision m_vision;
+
+  public RobotContainer() {
+    if (Robot.isReal()) {
+      PhotonVisionIO m_photonVisionIO = new PhotonVisionIO("Thrifty_cam", false,
+          new Translation3d(0.254, 0.254, 0.2032),
+          new Rotation3d(0, Math.toRadians(62), Math.toRadians(42)));
+
+      LimelightIO m_ll = new LimelightIO("limelight-gcd",
+          true,
+          drivetrain.rotationSupplier(),
+          drivetrain.getAngularVel(),
+          false);
+
+      // * Can have any type and any number of vision sources
+
+      m_vision = new Vision(
+          drivetrain.rotationSupplier(),
+          drivetrain.modulePositionsSupplier(),
+          drivetrain.poseSupplier(),
+          m_photonVisionIO,
+          m_ll);
+
+    } else if (Robot.isSimulation()) {
+
+    }
+
+    configureBindings();
+  }
+
+  private void configureBindings() {
+  }
+
+  public Command getAutonomousCommand() {
+    return Commands.print("No autonomous command configured");
+  }
+}
